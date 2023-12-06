@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e215081002dde7a4fbd556d49348655b, type: 3}
+  m_Name: TestGridSettings
+  m_EditorClassIdentifier: 
+  gridSize: {x: 8, y: 6}
+  gridSpacing: {x: 0.75, y: 0.875}
+  oddColumnOffset: 0.4375
+  selectorOffset: 0.5
+  hexagonPrefab: {fileID: 5519945558864171349, guid: 360ce9cb2535b524b8a4ed4335bd9c14, type: 3}
+  selectorPrefab: {fileID: 8130220029913813587, guid: 6b56aa55d48f5524e8a6dffd874c273b, type: 3}
