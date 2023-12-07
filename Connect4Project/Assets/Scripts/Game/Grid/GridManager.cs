@@ -13,7 +13,7 @@ namespace Game {
         [SerializeField] private GridGenerator gridGenerator;
 
         //vars
-        private GridTile[,] grid;
+        private List<List<GridTile>> grid;
         private List<List<int>> gridData = new List<List<int>>();
 
         private void Start()
@@ -21,31 +21,36 @@ namespace Game {
             //create grid
             grid = gridGenerator.GenerateGrid();
             InitializeGridData();
-            //set camera position
-            Vector2 camPos = (gridGenerator.GetGridBounds() - gridGenerator.gridSpacing) / 2; //place cam in middle of grid
-            EventBus<CameraMoveReqEvent>.Invoke(new CameraMoveReqEvent { teleport = true, targetPosition = camPos });
+            //frame camera
+            EventBus<CameraFrameReqEvent>.Invoke(
+                new CameraFrameReqEvent { 
+                    teleport = true, 
+                    center = gridGenerator.GetGridCenter(), 
+                    bounds = gridGenerator.GetGridBounds() 
+                }
+            );
         }
         private void InitializeGridData()
         {
-            for (int i = 0; i < grid.GetLength(0); i++)
+            for (int i = 0; i < grid.Count; i++)
             {
                 gridData.Add(new List<int>());
             }
         }
 
         //=========== Place Tile =============
-        public bool CanPlace(int column)
-        {
-            return grid[column, grid.GetLength(1) - 1].ownerID == -1; //check if there is at least 1 space left in column
-        }
+        //public bool CanPlace(int column)
+        //{
+        //return grid[column, grid.GetLength(1) - 1].ownerID == -1; //check if there is at least 1 space left in column
+        //}
 
         public void PlaceTile(int playerID, int column)
         {
             //add to data
-            gridData[column].Add(playerID);
+            //gridData[column].Add(playerID);
             //update visuals
-            Vector2Int gridPos = new Vector2Int(column, gridData[column].Count - 1);
-            grid[gridPos.x, gridPos.y].UpdateVisuals(playerID);
+            //Vector2Int gridPos = new Vector2Int(column, gridData[column].Count - 1);
+            //grid[gridPos.x, gridPos.y].UpdateVisuals(playerID);
         }
     }
 }

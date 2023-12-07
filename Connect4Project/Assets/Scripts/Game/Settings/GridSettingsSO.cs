@@ -8,13 +8,22 @@ namespace Game {
     {
         [Header("Generation Settings")]
         public Vector2Int gridSize;
-        public Vector2 gridSpacing;
-        public float oddColumnOffset;
+        public int centerSize;
         [Space(10f)]
-        public float selectorOffset;
+        public Vector2 gridSpacing;
+        public float yColumnOffset;
 
         [Header("Visuals")]
         public GameObject hexagonPrefab;
         public GameObject selectorPrefab;
+
+        //============ Editor Polish ============
+        private void OnValidate()
+        {
+            //gridSize check
+            if (gridSize.x % 2 == 0) { gridSize.x++; } //force gridsize.x to be uneven
+            //center size check
+            if (centerSize % 2 == 0) { centerSize++; } //force centerSize to be uneven
+        }
     }
 }

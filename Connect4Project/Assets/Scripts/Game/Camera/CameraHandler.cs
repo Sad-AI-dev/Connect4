@@ -7,6 +7,7 @@ namespace Game {
     {
         [Header("Framing Settings")]
         [SerializeField] private Vector2 defaultTeleportOffset;
+        [SerializeField] private float defaultDeadSpace;
 
         //vars
         private Camera cam;
@@ -20,14 +21,19 @@ namespace Game {
             cam = Camera.main;
 
             //listen to bus events
-            EventBus<CameraMoveReqEvent>.AddListener(HandleMoveReqEvent);
+            EventBus<CameraFrameReqEvent>.AddListener(HandleMoveReqEvent);
         }
 
         //========= Handle Move Req Events ========
-        private void HandleMoveReqEvent(CameraMoveReqEvent eventData)
+        private void HandleMoveReqEvent(CameraFrameReqEvent eventData)
         {
-            if (eventData.teleport) { Teleport(eventData.targetPosition + defaultTeleportOffset); }
-            else { StartMove(eventData.targetPosition); }
+            if (eventData.teleport) { 
+                //move camera
+                Teleport(eventData.center + defaultTeleportOffset);
+                //set camera size
+                cam.orthographicSize = GetTargetSize(eventData.bounds);
+            }
+            else { StartMove(eventData.center); }
         }
 
         //================================ Move Camera ==============================
@@ -43,11 +49,27 @@ namespace Game {
 
         }
 
+        //=============================== Frame Bounds ===================================
+        //======= GetTargetSize =======
+        private float GetTargetSize(Vector2 bounds)
+        {
+            float targetAspect = bounds.x / bounds.y;
+            if (cam.aspect >= targetAspect) {
+                //scale based on y bounds
+                return bounds.y / 2f + defaultDeadSpace;
+            }
+            else {
+                //scale based on x bounds
+                float difference = targetAspect / cam.aspect;
+                return (bounds.y / 2) * difference + defaultDeadSpace;
+            }
+        }
+
         //========= Handle Destroy ==========
         private void OnDestroy()
         {
             //unsubscribe from bus events
-            EventBus<CameraMoveReqEvent>.RemoveListener(HandleMoveReqEvent);
+            EventBus<CameraFrameReqEvent>.RemoveListener(HandleMoveReqEvent);
         }
     }
 }

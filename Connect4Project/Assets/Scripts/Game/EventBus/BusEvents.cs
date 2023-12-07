@@ -7,9 +7,10 @@ namespace Game {
     public class BusEvent { }
 
     //========= Camera Events ===========
-    public class CameraMoveReqEvent : BusEvent {
+    public class CameraFrameReqEvent : BusEvent {
         public bool teleport = false;
-        public Vector2 targetPosition;
+        public Vector2 center;
+        public Vector2 bounds;
     }
 
     //======= Game Events =========

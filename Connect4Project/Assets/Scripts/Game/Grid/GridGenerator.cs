@@ -11,11 +11,6 @@ namespace Game {
         [Header("Generation Settings")]
         [SerializeField] private GridSettingsSO gridSettings;
 
-        //interface vars
-        public Vector2Int gridSize { get { return gridSettings.gridSize; } }
-        public Vector2 gridSpacing { get { return gridSettings.gridSpacing; } }
-        public float oddColumnOffset { get { return gridSettings.oddColumnOffset; } }
-
         [Header("Hierarchy Settings")]
         [SerializeField] private Transform gridHolder;
 
@@ -35,62 +30,93 @@ namespace Game {
         }
 
         //=========== Grid Generation ===============
-        public GridTile[,] GenerateGrid()
+        public List<List<GridTile>> GenerateGrid()
         {
             //clear old grid
             ClearGrid();
+            //initialize / cache vars
+            InitializeGridVars();
             //generate new grid
-            GridTile[,] grid = new GridTile[gridSize.x, gridSize.y];
-            //generate grid content
-            for (int i = 0; i < grid.GetLength(0); i++)
+            List<List<GridTile>> grid = new List<List<GridTile>>();
+            for (int i = 0; i < gridSettings.gridSize.x; i++)
             {
-                GenerateGridColumn(i, ref grid);
+                grid.Add(GenerateGridColumn(i));
             }
-            //return generated grid
+            //return created grid
             return grid;
+        }
+        private void InitializeGridVars()
+        {
+            gridHolder = gridHolder != null ? gridHolder : transform; //grid holder fallback
         }
 
         //========== Generate Columns ===========
-        private void GenerateGridColumn(int columnID, ref GridTile[,] grid)
+        private List<GridTile> GenerateGridColumn(int columnID)
         {
-            for (int i = 0; i < grid.GetLength(1); i++)
+            //prep data
+            List<GridTile> column = new List<GridTile>();
+            int distanceFromCenter = CalcDistanceToCenter(columnID);
+            int tilesInColumn = gridSettings.gridSize.y - distanceFromCenter;
+            //generate column contents
+            for (int i = 0; i < tilesInColumn; i++)
             {
-                grid[columnID, i] = GenerateTile(columnID, i);
+                column.Add(GenerateTile(columnID, i, distanceFromCenter));
             }
+            return null;
+        }
+
+        //calculate how many tiles should be in any given column
+        private int CalcDistanceToCenter(int columnID)
+        {
+            //normalize columnID to always be center or later
+            int absColumnID = Mathf.Abs(columnID - ((gridSettings.gridSize.x - 1) / 2));
+            //account for increased center size grids
+            return Mathf.Max(0, absColumnID - ((gridSettings.centerSize - 1) / 2));
         }
 
         //============ Generate Tile ==============
-        private GridTile GenerateTile(int xPos, int yPos) //takes position in grid cells
+        private GridTile GenerateTile(int xPos, int yPos, int distanceFromCenter)
         {
-            //gridHolder fallback
-            Transform holder = gridHolder != null ? gridHolder : transform;
-            //create gridTile object
 #if UNITY_EDITOR
-            //use this version for editor tools
-            GameObject tileObj = UnityEditor.PrefabUtility.InstantiatePrefab(gridSettings.hexagonPrefab, holder) as GameObject;
+            //use this version in editor for convenience
+            GameObject tileObj = UnityEditor.PrefabUtility.InstantiatePrefab(gridSettings.hexagonPrefab, gridHolder) as GameObject;
 #else
             //use this version for build
-            GameObject tileObj = Instantiate(gridSettings.hexagonPrefab, holder);
+            GameObject tileObj = Instantiate(gridSettings.hexagonPrefab, gridHolder);
 #endif
-            tileObj.transform.position = GridToWorldPosition(xPos, yPos);
+            tileObj.transform.position = GridToWorldPos(xPos, yPos, distanceFromCenter);
             return tileObj.GetComponent<GridTile>();
         }
 
-        private Vector2 GridToWorldPosition(int xPos, int yPos)
+        private Vector2 GridToWorldPos(int xPos, int yPos, int distanceFromCenter)
         {
-            Vector2 pos = new Vector2(xPos * gridSpacing.x, yPos * gridSpacing.y);
-            //if odd column, add offset to y pos
-            if (xPos % 2 == 1)
-            {
-                pos.y += oddColumnOffset;
-            }
-            return pos;
+            //calculate y offset
+            float yOffset = distanceFromCenter * gridSettings.yColumnOffset;
+            if (IsOffsetCenter(xPos, distanceFromCenter)) { yOffset += gridSettings.yColumnOffset; }
+            //convert grid position to world position
+            return new Vector2(xPos * gridSettings.gridSpacing.x, yPos * gridSettings.gridSpacing.y + yOffset);
         }
 
-        //=========== Grid Bounds ==============
+        private bool IsOffsetCenter(int xPos, int distanceFromCenter)
+        {
+            //is in center check
+            if (distanceFromCenter == 0) {
+                //get position within center
+                int centerPos = xPos - ((gridSettings.gridSize.x - gridSettings.centerSize) / 2);
+                return centerPos % 2 == 1;
+            }
+            return false;
+        }
+
+        //=============== Grid Center ================
+        public Vector2 GetGridCenter()
+        {
+            return GetGridBounds() / 2f - (gridSettings.gridSpacing / 2f);
+        }
+        //=============== Grid Bounds ==================
         public Vector2 GetGridBounds()
         {
-            return new Vector2(gridSize.x * gridSpacing.x, gridSize.y * gridSpacing.y + (gridSize.x > 1 ? oddColumnOffset : 0f));
+            return gridSettings.gridSize * gridSettings.gridSpacing;
         }
     }
 }
