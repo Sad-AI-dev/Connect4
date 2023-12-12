@@ -5,48 +5,43 @@ using UnityEngine;
 namespace Game {
     public class SelectorGenerator : MonoBehaviour
     {
-        //[Header("Generation Settings")]
-        //[SerializeField] private GridSettingsSO gridSettings;
+        [Header("Generation Settings")]
+        [SerializeField] private GameObject selectorPrefab;
+        [Space(10f)]
+        [SerializeField] private float selectorYOffset;
 
-        //[Header("Hierarchy Settings")]
-        //[SerializeField] private Transform selectorHolder;
+        [Header("Hierarchy Settings")]
+        [SerializeField] private Transform selectorHolder;
 
-        //private void Start()
-        //{
-        //    GenerateSelectors();
-        //}
+        //=========== Generate Selectors ===========
+        public void GenerateSelectors(List<List<GridTile>> grid)
+        {
+            //selectorHolder fallback
+            if (!selectorHolder) { selectorHolder = transform; }
+            //create downward selector objects
+            CreateDownSelectors(grid);
+        }
+        //======= Selector Passes ========
+        private void CreateDownSelectors(List<List<GridTile>> grid)
+        {
+            for (int i = 0; i < grid.Count; i++) {
+                //calculate position
+                Vector3 selectorPos = grid[i][^1].transform.position + new Vector3(0, selectorYOffset, 0);
+                //create object
+                CreateSelector(selectorPos, selectorHolder, i, GridDirection.Down);
+            }
+        }
 
-        ////=========== Generate Selectors ===========
-        //private void GenerateSelectors()
-        //{
-        //    //cache data
-        //    Transform holder = selectorHolder != null ? selectorHolder : transform; //selectorHolder fallback
-        //    Vector2[] selectorPositions = GetSelectorPositions();
-        //    //create selector
-        //    for (int i = 0; i < selectorPositions.Length; i++)
-        //    {
-        //        GenerateSelector(selectorPositions[i], holder, i);
-        //    }
-        //}
+        //========== Create Objects ===========
+        private void CreateSelector(Vector2 pos, Transform holder, int column, GridDirection placeDirection)
+        {
+            GameObject obj = Instantiate(selectorPrefab, holder);
+            obj.transform.position = pos;
+            //set selector data
+            Selector selector = obj.GetComponent<Selector>();
+            selector.columnID = column;
+            selector.placeDirection = placeDirection;
+        }
 
-        //private Vector2[] GetSelectorPositions()
-        //{
-        //    Vector2[] positions = new Vector2[gridSettings.gridSize.x];
-        //    float height = gridSettings.gridSize.y * gridSettings.gridSpacing.y + gridSettings.selectorOffset;
-
-        //    for (int i = 0; i < positions.Length; i++)
-        //    {
-        //        positions[i] = new Vector2(i * gridSettings.gridSpacing.x, height);
-        //    }
-        //    return positions;
-        //}
-
-        ////========== Create Objects ===========
-        //private void GenerateSelector(Vector2 pos, Transform holder, int column)
-        //{
-        //    GameObject obj = Instantiate(gridSettings.selectorPrefab, holder);
-        //    obj.transform.position = pos;
-        //    obj.GetComponent<Selector>().columnID = column;
-        //}
     }
 }

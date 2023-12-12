@@ -15,7 +15,6 @@ namespace Game {
 
         [Header("Visuals")]
         public GameObject hexagonPrefab;
-        public GameObject selectorPrefab;
 
         //============ Editor Polish ============
         private void OnValidate()

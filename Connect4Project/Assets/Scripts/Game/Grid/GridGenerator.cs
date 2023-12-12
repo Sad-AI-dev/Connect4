@@ -47,7 +47,8 @@ namespace Game {
         }
         private void InitializeGridVars()
         {
-            gridHolder = gridHolder != null ? gridHolder : transform; //grid holder fallback
+            //grid holder fallback
+            if (!gridHolder) { gridHolder = transform; }
         }
 
         //========== Generate Columns ===========
@@ -62,7 +63,7 @@ namespace Game {
             {
                 column.Add(GenerateTile(columnID, i, distanceFromCenter));
             }
-            return null;
+            return column;
         }
 
         //calculate how many tiles should be in any given column
@@ -84,15 +85,19 @@ namespace Game {
             //use this version for build
             GameObject tileObj = Instantiate(gridSettings.hexagonPrefab, gridHolder);
 #endif
-            tileObj.transform.position = GridToWorldPos(xPos, yPos, distanceFromCenter);
-            return tileObj.GetComponent<GridTile>();
+            bool isOffsetCenter = IsOffsetCenter(xPos, distanceFromCenter);
+            tileObj.transform.position = GridToWorldPos(xPos, yPos, distanceFromCenter, isOffsetCenter);
+            //setup tile data
+            GridTile tile = tileObj.GetComponent<GridTile>();
+            tile.isRaisedCenterTile = isOffsetCenter;
+            return tile;
         }
 
-        private Vector2 GridToWorldPos(int xPos, int yPos, int distanceFromCenter)
+        private Vector2 GridToWorldPos(int xPos, int yPos, int distanceFromCenter, bool isOffsetCenter)
         {
             //calculate y offset
             float yOffset = distanceFromCenter * gridSettings.yColumnOffset;
-            if (IsOffsetCenter(xPos, distanceFromCenter)) { yOffset += gridSettings.yColumnOffset; }
+            if (isOffsetCenter) { yOffset += gridSettings.yColumnOffset; }
             //convert grid position to world position
             return new Vector2(xPos * gridSettings.gridSpacing.x, yPos * gridSettings.gridSpacing.y + yOffset);
         }

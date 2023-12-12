@@ -22,11 +22,11 @@ namespace Game {
         //========= Handle Try Place ==============
         private void HandleTryPlace(TryPlaceEvent eventData)
         {
-            //if (gridManager.CanPlace(eventData.targetColumn))
-            //{
-            //    gridManager.PlaceTile(currentPlayer, eventData.targetColumn);
-            //    currentPlayer++;
-            //}
+            if (gridManager.CanPlace(eventData.targetColumn))
+            {
+                gridManager.PlaceTile(currentPlayer, eventData.targetColumn, eventData.direction);
+                currentPlayer++;
+            }
         }
 
         //======== Handle Destroy ========

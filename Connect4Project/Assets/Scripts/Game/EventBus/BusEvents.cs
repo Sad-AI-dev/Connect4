@@ -8,7 +8,6 @@ namespace Game {
 
     //========= Camera Events ===========
     public class CameraFrameReqEvent : BusEvent {
-        public bool teleport = false;
         public Vector2 center;
         public Vector2 bounds;
     }
@@ -16,5 +15,6 @@ namespace Game {
     //======= Game Events =========
     public class TryPlaceEvent : BusEvent {
         public int targetColumn;
+        public GridDirection direction;
     }
 }

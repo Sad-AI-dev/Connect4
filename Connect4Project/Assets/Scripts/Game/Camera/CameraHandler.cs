@@ -27,26 +27,16 @@ namespace Game {
         //========= Handle Move Req Events ========
         private void HandleMoveReqEvent(CameraFrameReqEvent eventData)
         {
-            if (eventData.teleport) { 
-                //move camera
-                Teleport(eventData.center + defaultTeleportOffset);
-                //set camera size
-                cam.orthographicSize = GetTargetSize(eventData.bounds);
-            }
-            else { StartMove(eventData.center); }
+            //move camera
+            Teleport(eventData.center + defaultTeleportOffset);
+            //set camera size
+            cam.orthographicSize = GetTargetSize(eventData.bounds);
         }
 
         //================================ Move Camera ==============================
-        //======== Teleport ========
         private void Teleport(Vector2 destination)
         {
             cam.transform.position = new Vector3(destination.x, destination.y, cam.transform.position.z); //maintain z pos
-        }
-
-        //========= Move ===========
-        private void StartMove(Vector2 destination)
-        {
-
         }
 
         //=============================== Frame Bounds ===================================

@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Game {
+    /// <summary>
+    /// Holds data for the visuals of each tile
+    /// </summary>
     [RequireComponent(typeof(SpriteRenderer))]
     public class GridTile : MonoBehaviour
     {
-        public int ownerID = -1;
-
         [Header("External Components")]
         public SpriteRenderer spriteRenderer;
+
+        //positional vars
+        [HideInInspector] public bool isRaisedCenterTile; //used by gridDirectionUtil
 
         private void Awake()
         {
@@ -20,7 +24,6 @@ namespace Game {
         //========= Update Visuals ==========
         public void UpdateVisuals(int playerID)
         {
-            ownerID = playerID;
             gameObject.SetActive(false);
         }
     }

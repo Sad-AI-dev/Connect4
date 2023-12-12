@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TestGridSettings
   m_EditorClassIdentifier: 
   gridSize: {x: 11, y: 6}
-  centerSize: 5
+  centerSize: 3
   gridSpacing: {x: 0.75, y: 0.875}
   yColumnOffset: 0.4375
   hexagonPrefab: {fileID: 5519945558864171349, guid: 360ce9cb2535b524b8a4ed4335bd9c14, type: 3}
