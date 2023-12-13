@@ -24,7 +24,14 @@ namespace Game {
             //hide selectors by default
             ResetSelectors();
             //listen to events
+            EventBus<TryPlaceEvent>.AddListener(HandlePlaceTile);
             EventBus<HoverTileEvent>.AddListener(HandleHoverTile);
+        }
+
+        //========== Handle Selector Click =========
+        private void HandlePlaceTile(TryPlaceEvent eventData)
+        {
+            ResetSelectors();
         }
 
         //=========== Move Selectors ==========
@@ -92,6 +99,7 @@ namespace Game {
         //=========== Handle Destroy ==========
         private void OnDestroy()
         {
+            EventBus<TryPlaceEvent>.RemoveListener(HandlePlaceTile);
             EventBus<HoverTileEvent>.RemoveListener(HandleHoverTile);
         }
     }
