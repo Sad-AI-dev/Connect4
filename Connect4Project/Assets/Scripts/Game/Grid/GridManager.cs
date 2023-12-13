@@ -11,19 +11,16 @@ namespace Game {
         //use dependency injection through the editor
         [Header("Refs")]
         [SerializeField] private GridGenerator gridGenerator;
-        [SerializeField] private SelectorGenerator selectorGenerator;
 
         //vars
-        private List<List<GridTile>> gridVisuals;
-        private List<List<int>> gridData;
+        [HideInInspector] public List<List<GridTile>> gridVisuals; //holds data regarding the visuals of the grid
+        private List<List<int>> gridData; //only holds data about who owns each grid tile
 
         private void Start()
         {
             //create grid
             gridVisuals = gridGenerator.GenerateGrid();
             InitializeGridData();
-            //generate selectors, if selector generator is set
-            if (selectorGenerator) { selectorGenerator.GenerateSelectors(gridVisuals); }
             //frame camera
             EventBus<CameraFrameReqEvent>.Invoke(
                 new CameraFrameReqEvent {
@@ -39,6 +36,12 @@ namespace Game {
             {
                 gridData.Add(new List<int>());
             }
+        }
+
+        //========== Util ==========
+        public GridTile GetTopTileInColumn(int column)
+        {
+            return gridVisuals[column][^1];
         }
 
         //=========== Place Tile =============

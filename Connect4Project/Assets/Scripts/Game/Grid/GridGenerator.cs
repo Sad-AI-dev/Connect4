@@ -89,6 +89,8 @@ namespace Game {
             tileObj.transform.position = GridToWorldPos(xPos, yPos, distanceFromCenter, isOffsetCenter);
             //setup tile data
             GridTile tile = tileObj.GetComponent<GridTile>();
+            tile.gridPos = new Vector2Int(xPos, yPos);
+            tile.isCenterTile = distanceFromCenter == 0;
             tile.isRaisedCenterTile = isOffsetCenter;
             return tile;
         }

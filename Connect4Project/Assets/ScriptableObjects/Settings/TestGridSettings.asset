@@ -17,4 +17,3 @@ MonoBehaviour:
   gridSpacing: {x: 0.75, y: 0.875}
   yColumnOffset: 0.4375
   hexagonPrefab: {fileID: 5519945558864171349, guid: 360ce9cb2535b524b8a4ed4335bd9c14, type: 3}
-  selectorPrefab: {fileID: 8130220029913813587, guid: 6b56aa55d48f5524e8a6dffd874c273b, type: 3}

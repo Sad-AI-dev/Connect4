@@ -13,6 +13,10 @@ namespace Game {
     }
 
     //======= Game Events =========
+    public class HoverTileEvent : BusEvent {
+        public GridTile hoveredTile;
+    }
+
     public class TryPlaceEvent : BusEvent {
         public int targetColumn;
         public GridDirection direction;
