@@ -5,6 +5,9 @@ using UnityEngine;
 namespace Game {
     public class GameStateManager : MonoBehaviour
     {
+        [Header("GameSettings")]
+        [SerializeField] private GameRulesSO rules;
+
         [Header("References")]
         [SerializeField] private GridManager gridManager;
 
@@ -25,7 +28,15 @@ namespace Game {
             if (gridManager.CanPlace(eventData.targetColumn))
             {
                 gridManager.PlaceTile(currentPlayer, eventData.targetColumn, eventData.direction);
-                currentPlayer++;
+                //victory check
+                if (gridManager.FindLongestSequence(currentPlayer) >= rules.sequenceToWin) {
+                    Debug.Log($"{currentPlayer} won!");
+                }
+                else {
+                    currentPlayer++;
+                    //loop check
+                    if (currentPlayer >= rules.playerCount) { currentPlayer = 0; }
+                }
             }
         }
 

@@ -99,7 +99,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 2643465751760518163}
+  colorSettings: {fileID: 11400000, guid: 4b2bd2051d5d5074486a2b9d11e86674, type: 2}
   gridPos: {x: 0, y: 0}
+  isCenterTile: 0
   isRaisedCenterTile: 0
 --- !u!60 &5441522920407505945
 PolygonCollider2D:

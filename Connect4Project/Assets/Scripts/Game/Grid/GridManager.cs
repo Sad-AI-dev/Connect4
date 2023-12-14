@@ -16,6 +16,9 @@ namespace Game {
         [HideInInspector] public List<List<GridTile>> gridVisuals; //holds data regarding the visuals of the grid
         private List<List<int>> gridData; //only holds data about who owns each grid tile
 
+        //keep track of last placed tile for victory checks
+        private Vector2Int lastPlacedTile;
+
         private void Start()
         {
             //create grid
@@ -69,8 +72,8 @@ namespace Game {
 
         public void PlaceTile(int playerID, int column, GridDirection direction)
         {
-            switch (direction)
-            {
+            //place tile logic
+            switch (direction) {
                 case GridDirection.Down:
                     PlaceTileDown(playerID, column);
                     break;
@@ -92,6 +95,8 @@ namespace Game {
             //update visuals
             Vector2Int gridPos = new Vector2Int(column, gridData[column].Count - 1);
             gridVisuals[gridPos.x][gridPos.y].UpdateVisuals(playerID);
+            //store last placed tile
+            lastPlacedTile = gridPos;
         }
 
         private void PlaceTileDiagonal(int playerID, int column, GridDirection direction)
@@ -112,6 +117,8 @@ namespace Game {
             }
             //update visuals
             gridVisuals[placePos.x][placePos.y].UpdateVisuals(playerID);
+            //store last placed Tile
+            lastPlacedTile = placePos;
         }
 
         private bool IsValidPosition(Vector2Int gridPos)
@@ -123,6 +130,74 @@ namespace Game {
         {
             if (gridData[validGridPos.x].Count <= validGridPos.y) { return false; } //check if pos is higher than highest tile in column
             else { return gridData[validGridPos.x][validGridPos.y] >= 0; } //check if pos has been claimed
+        }
+
+        //============= Victory Check =================
+        /// <summary>
+        /// returns the longest sequence of tiles that belong to player with playerID.
+        /// Only checks around last placed tile!
+        /// </summary>
+        /// <param name="playerID">ID of the player who to check for</param>
+        /// <returns></returns>
+        public int FindLongestSequence(int playerID)
+        {
+            int[] longestSequences = new int[] {
+                FindLongestSequenceInDirectionPair(playerID, GridDirection.Up, GridDirection.Down),
+                FindLongestSequenceInDirectionPair(playerID, GridDirection.LeftUp, GridDirection.RightDown),
+                FindLongestSequenceInDirectionPair(playerID, GridDirection.RightUp, GridDirection.LeftDown)
+            };
+            return FindHighest(longestSequences);
+        }
+
+        private int FindHighest(int[] array)
+        {
+            int highest = array[0]; //assume array has at least 1 element
+            for (int i = 1; i < array.Length; i++) {
+                if (array[i] > highest) { highest = array[i]; }
+            }
+            Debug.Log(highest); //DEL ME
+            return highest;
+        }
+
+        //============= Find Longest Sequences ================
+        /// <summary>
+        /// searches grid for longest player owned sequence along 2 given directions, starting from last placed tile
+        /// </summary>
+        /// <param name="playerID">player id to look for</param>
+        /// <param name="upDirection">1st direction to search</param>
+        /// <param name="downDirection">2nd direction to search</param>
+        /// <returns></returns>
+        private int FindLongestSequenceInDirectionPair(int playerID, GridDirection upDirection, GridDirection downDirection)
+        {
+            //define dirs pair
+            GridDirection[] dirs = new GridDirection[] { upDirection, downDirection };
+            int sequenceLength = 1; //count last placed tile
+            //search in dir pair
+            for (int i = 0; i < dirs.Length; i++) {
+                Vector2Int searchPos = lastPlacedTile + DirToVector(dirs[i], lastPlacedTile); //start with offset in direction to search
+                while (PosIsInOwnedBounds(searchPos) && IsPlayerOwnedPos(searchPos, playerID)) {
+                    //add to sequence
+                    sequenceLength++;
+                    searchPos += DirToVector(dirs[i], searchPos); //continue search
+                }
+            }
+            //return result
+            return sequenceLength;
+        }
+
+        private bool PosIsInOwnedBounds(Vector2Int pos)
+        {
+            return pos.x >= 0 && pos.x < gridData.Count && //x bounds check
+                pos.y >= 0 && pos.y < gridData[pos.x].Count; //y bounds check
+        }
+
+        private Vector2Int DirToVector(GridDirection dir, Vector2Int currentPos)
+        {
+            return GridDirectionUtil.GridDirectionToVector2(dir, gridVisuals[currentPos.x][currentPos.y], this);
+        }
+
+        private bool IsPlayerOwnedPos(Vector2Int pos, int playerID) {
+            return gridData[pos.x][pos.y] == playerID;
         }
     }
 }

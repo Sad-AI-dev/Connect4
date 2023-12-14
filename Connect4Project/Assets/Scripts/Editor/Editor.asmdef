@@ -2,7 +2,8 @@
     "name": "Editor",
     "rootNamespace": "",
     "references": [
-        "GUID:cc1a8408ff5809141aae72aab8a51b8a"
+        "GUID:cc1a8408ff5809141aae72aab8a51b8a",
+        "GUID:82a22e23ad8207b4cb46697f8c7e38cd"
     ],
     "includePlatforms": [
         "Editor"

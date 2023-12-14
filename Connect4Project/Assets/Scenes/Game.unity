@@ -5049,4 +5049,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1417546699c7c934bba0680f4fda3ace, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rules: {fileID: 11400000, guid: f5aea0a540415e346bd967480086e837, type: 2}
   gridManager: {fileID: 733884581}

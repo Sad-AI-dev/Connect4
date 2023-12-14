@@ -13,6 +13,9 @@ namespace Game {
         [Header("External Components")]
         public SpriteRenderer spriteRenderer;
 
+        [Header("Color Settings")]
+        public PlayerColorSettingsSO colorSettings;
+
         //positional vars
         [HideInInspector] public Vector2Int gridPos;
         [HideInInspector] public bool isCenterTile; //used by selector
@@ -27,7 +30,7 @@ namespace Game {
         //========= Update Visuals ==========
         public void UpdateVisuals(int playerID)
         {
-            gameObject.SetActive(false);
+            spriteRenderer.color = colorSettings.GetPlayerColor(playerID);
         }
 
         //========== Pointer Event Handling ==========
