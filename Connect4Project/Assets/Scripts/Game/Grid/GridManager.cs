@@ -19,7 +19,13 @@ namespace Game {
         //keep track of last placed tile for victory checks
         private Vector2Int lastPlacedTile;
 
-        private void Start()
+        private void Awake()
+        {
+            EventBus<GameStartEvent>.AddListener(InitializeGrid);
+        }
+
+        //=========== Initialize Grid ==========
+        private void InitializeGrid(GameStartEvent eventData)
         {
             //create grid
             gridVisuals = gridGenerator.GenerateGrid();
@@ -155,7 +161,6 @@ namespace Game {
             for (int i = 1; i < array.Length; i++) {
                 if (array[i] > highest) { highest = array[i]; }
             }
-            Debug.Log(highest); //DEL ME
             return highest;
         }
 
@@ -198,6 +203,12 @@ namespace Game {
 
         private bool IsPlayerOwnedPos(Vector2Int pos, int playerID) {
             return gridData[pos.x][pos.y] == playerID;
+        }
+
+        //============== Handle Destroy =============
+        private void OnDestroy()
+        {
+            EventBus<GameStartEvent>.RemoveListener(InitializeGrid);
         }
     }
 }

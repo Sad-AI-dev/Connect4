@@ -6,7 +6,7 @@ namespace Game {
     public class GameStateManager : MonoBehaviour
     {
         [Header("GameSettings")]
-        [SerializeField] private GameRulesSO rules;
+        [SerializeField] private GameSettingsSO settings;
 
         [Header("References")]
         [SerializeField] private GridManager gridManager;
@@ -22,6 +22,14 @@ namespace Game {
             currentPlayer = 0;
         }
 
+        private void Start()
+        {
+            //notify game has started
+            EventBus<GameStartEvent>.Invoke(new GameStartEvent { settings = settings });
+            //notify next turn
+            EventBus<NextTurnEvent>.Invoke(new NextTurnEvent { currentPlayerID = currentPlayer });
+        }
+
         //========= Handle Try Place ==============
         private void HandleTryPlace(TryPlaceEvent eventData)
         {
@@ -29,13 +37,16 @@ namespace Game {
             {
                 gridManager.PlaceTile(currentPlayer, eventData.targetColumn, eventData.direction);
                 //victory check
-                if (gridManager.FindLongestSequence(currentPlayer) >= rules.sequenceToWin) {
-                    Debug.Log($"{currentPlayer} won!");
+                if (gridManager.FindLongestSequence(currentPlayer) >= settings.rules.sequenceToWin) {
+                    //notify game end
+                    EventBus<GameEndEvent>.Invoke(new GameEndEvent { winnerID = currentPlayer });
                 }
                 else {
                     currentPlayer++;
                     //loop check
-                    if (currentPlayer >= rules.playerCount) { currentPlayer = 0; }
+                    if (currentPlayer >= settings.rules.playerCount) { currentPlayer = 0; }
+                    //notify next turn
+                    EventBus<NextTurnEvent>.Invoke(new NextTurnEvent { currentPlayerID = currentPlayer });
                 }
             }
         }

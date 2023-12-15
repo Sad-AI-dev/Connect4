@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a615a2df74ec10b4ba61170d12ad94d4, type: 3}
   m_Name: GameRules
   m_EditorClassIdentifier: 
-  playerCount: 2
+  playerCount: 6
   sequenceToWin: 4

@@ -6,6 +6,19 @@ namespace Game {
     /// </summary>
     public class BusEvent { }
 
+    //========= State Events =========
+    public class GameStartEvent : BusEvent {
+        public GameSettingsSO settings;
+    }
+
+    public class NextTurnEvent : BusEvent {
+        public int currentPlayerID;
+    }
+
+    public class GameEndEvent : BusEvent {
+        public int winnerID;
+    }
+
     //========= Camera Events ===========
     public class CameraFrameReqEvent : BusEvent {
         public Vector2 center;
