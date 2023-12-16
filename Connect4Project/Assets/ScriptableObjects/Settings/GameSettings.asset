@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: GameSettings
   m_EditorClassIdentifier: 
   rules: {fileID: 11400000, guid: f5aea0a540415e346bd967480086e837, type: 2}
-  gridSettings: {fileID: 11400000, guid: f96bb1225d32a4a4a88057c18df4c3ab, type: 2}
+  gridSettings: {fileID: 11400000, guid: 20d6127ab3fb1744fbea4c600032c9a0, type: 2}
   colorSettings: {fileID: 11400000, guid: 4b2bd2051d5d5074486a2b9d11e86674, type: 2}

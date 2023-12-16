@@ -17,5 +17,11 @@ namespace Game {
             }
             else { return defaultColor; } //fallback
         }
+
+        public string GetPlayerHexCode(int playerID)
+        {
+            Color playerColor = GetPlayerColor(playerID);
+            return "#" + ColorUtility.ToHtmlStringRGB(playerColor);
+        }
     }
 }

@@ -8,11 +8,13 @@ namespace Game {
     /// </summary>
     public class GridGenerator : MonoBehaviour
     {
-        [Header("Generation Settings")]
-        [SerializeField] private GridSettingsSO gridSettings;
+        [Header("Test Settings")]
+        public GridSettingsSO testSettings; //used for editor functionality
 
         [Header("Hierarchy Settings")]
         [SerializeField] private Transform gridHolder;
+
+        private GridSettingsSO gridSettings;
 
         //=========== Clear Grid ==============
         public void ClearGrid()
@@ -30,8 +32,9 @@ namespace Game {
         }
 
         //=========== Grid Generation ===============
-        public List<List<GridTile>> GenerateGrid()
+        public List<List<GridTile>> GenerateGrid(GridSettingsSO settings)
         {
+            gridSettings = settings;
             //clear old grid
             ClearGrid();
             //initialize / cache vars

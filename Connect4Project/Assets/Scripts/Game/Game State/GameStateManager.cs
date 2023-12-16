@@ -37,18 +37,49 @@ namespace Game {
             {
                 gridManager.PlaceTile(currentPlayer, eventData.targetColumn, eventData.direction);
                 //victory check
-                if (gridManager.FindLongestSequence(currentPlayer) >= settings.rules.sequenceToWin) {
-                    //notify game end
-                    EventBus<GameEndEvent>.Invoke(new GameEndEvent { winnerID = currentPlayer });
-                }
-                else {
-                    currentPlayer++;
-                    //loop check
-                    if (currentPlayer >= settings.rules.playerCount) { currentPlayer = 0; }
-                    //notify next turn
-                    EventBus<NextTurnEvent>.Invoke(new NextTurnEvent { currentPlayerID = currentPlayer });
-                }
+                if (!IsVictoryCheck() && !IsDrawCheck()) { 
+                    NextTurn(); //continue to next turn if not victory
+                } 
             }
+        }
+
+        private bool IsVictoryCheck()
+        {
+            if (gridManager.FindLongestSequence(currentPlayer) >= settings.rules.sequenceToWin) {
+                //notify game end
+                EventBus<GameEndEvent>.Invoke(new GameEndEvent { 
+                    settings = settings, 
+                    isDraw = false, //game did not end in draw
+                    winnerID = currentPlayer 
+                });
+                //return result
+                return true;
+            }
+            return false;
+        }
+
+        private bool IsDrawCheck()
+        {
+            if (gridManager.IsGridFull())
+            {
+                //notify game end
+                EventBus<GameEndEvent>.Invoke(new GameEndEvent { 
+                    settings = settings,
+                    isDraw = true, //game ended in draw
+                });
+                //return result
+                return true;
+            }
+            return false;
+        }
+
+        private void NextTurn()
+        {
+            currentPlayer++;
+            //loop check
+            if (currentPlayer >= settings.rules.playerCount) { currentPlayer = 0; }
+            //notify next turn
+            EventBus<NextTurnEvent>.Invoke(new NextTurnEvent { currentPlayerID = currentPlayer });
         }
 
         //======== Handle Destroy ========

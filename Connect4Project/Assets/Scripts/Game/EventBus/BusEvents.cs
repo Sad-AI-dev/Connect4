@@ -16,6 +16,8 @@ namespace Game {
     }
 
     public class GameEndEvent : BusEvent {
+        public GameSettingsSO settings;
+        public bool isDraw;
         public int winnerID;
     }
 

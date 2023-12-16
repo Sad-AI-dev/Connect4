@@ -1,8 +1,9 @@
 {
-    "name": "Game",
-    "rootNamespace": "Game",
+    "name": "UI",
+    "rootNamespace": "UI",
     "references": [
-        "GUID:82a22e23ad8207b4cb46697f8c7e38cd"
+        "GUID:cc1a8408ff5809141aae72aab8a51b8a",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

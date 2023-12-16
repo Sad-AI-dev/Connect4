@@ -28,7 +28,7 @@ namespace Game {
         private void InitializeGrid(GameStartEvent eventData)
         {
             //create grid
-            gridVisuals = gridGenerator.GenerateGrid();
+            gridVisuals = gridGenerator.GenerateGrid(eventData.settings.gridSettings);
             InitializeGridData();
             //frame camera
             EventBus<CameraFrameReqEvent>.Invoke(
@@ -203,6 +203,17 @@ namespace Game {
 
         private bool IsPlayerOwnedPos(Vector2Int pos, int playerID) {
             return gridData[pos.x][pos.y] == playerID;
+        }
+
+        //============== Draw Check ===========
+        public bool IsGridFull()
+        {
+            for (int i = 0; i < gridData.Count; i++) {
+                //check if column is full
+                if (CanPlace(i)) { return false; }
+            }
+            //all columns are full, conclude draw
+            return true;
         }
 
         //============== Handle Destroy =============

@@ -29,7 +29,7 @@ public class GridGeneratorEditor : Editor
         //generate grid preview button
         if (GUILayout.Button("Generate Grid Preview"))
         {
-            generator.GenerateGrid();
+            generator.GenerateGrid(generator.testSettings);
         }
     }
 }
